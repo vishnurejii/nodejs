@@ -14,8 +14,17 @@ app.get("/",(req,res)=>{
     }
 )
 
-app.get("/1",(req,res)=>{
-    res.send(user[0])
+app.get("/:id",(req,res)=>{
+   const id=Number(req.params.id)
+
+   const found=user.find(u=>u.id===id)
+
+   if(!found){
+    req.send("id not find")
+   }else{
+    res.send(user[id-1])
+
+   }
 })
 
    
