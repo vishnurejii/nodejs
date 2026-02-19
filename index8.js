@@ -12,8 +12,12 @@ const user=[{id:1,name:"john",email:"john@gmail.com",role:"student"},
 app.get("/",(req,res)=>{
      res.json(user)
     }
-   
+)
+
+app.get("/1",(req,res)=>{
+    res.send(user[0])
+})
+
    
    
 
-)
