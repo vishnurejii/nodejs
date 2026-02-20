@@ -24,7 +24,7 @@ const app = express()
 app.use(express.json())
 const auth=(req, res, next)=>{
 
-    const token=req.body.token   
+    const token=req.body  
     if(token===1234){
         next()  
     }
