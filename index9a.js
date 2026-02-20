@@ -24,16 +24,15 @@ const app = express()
 app.use(express.json())
 const auth=(req, res, next)=>{
 
-    const token=req.body  
-    if(token===1234){
+    const token=req.body.token   
+    if (token===1234) {
         next()  
-    }
-    else{
+    } else {
         return res.send("stopped")
     }
 }
 
-app.post("/",auth,(req, res)=>{
+app.post("/token", auth,(req, res)=>{
     res.send("Welcome User")
 })
 
