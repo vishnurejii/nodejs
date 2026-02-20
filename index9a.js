@@ -33,7 +33,7 @@ const auth=(req, res, next)=>{
     }
 }
 
-app.post("/token",auth,(req, res)=>{
+app.post("/",auth,(req, res)=>{
     res.send("Welcome User")
 })
 
