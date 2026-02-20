@@ -25,9 +25,10 @@ app.use(express.json())
 const auth=(req, res, next)=>{
 
     const token=req.body.token   
-    if (token===1234) {
+    if(token===1234){
         next()  
-    } else {
+    }
+    else{
         return res.send("stopped")
     }
 }
