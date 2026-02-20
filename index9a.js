@@ -18,21 +18,45 @@
 
 // app.listen(8080)
 
+// import express from "express"
+// const app = express()
+
+// app.use(express.json())
+// const auth=(req, res, next)=>{
+
+//     const token=req.body.token   
+//     if (token===1234) {
+//         next()  
+//     } else {
+//         return res.send("stopped")
+//     }
+// }
+
+// app.post("/token", auth,(req, res)=>{
+//     res.send("Welcome User")
+// })
+
+// app.listen(8080)
+
+
 import express from "express"
 const app = express()
 
 app.use(express.json())
 const auth=(req, res, next)=>{
 
-    const token=req.body.token   
-    if (token===1234) {
+    const BearerToken=req.headers.authorization
+
+    const token=BearerToken.slice(7)
+
+    if (token==="1234") {
         next()  
     } else {
         return res.send("stopped")
     }
 }
 
-app.post("/token", auth,(req, res)=>{
+app.post("/", auth,(req, res)=>{
     res.send("Welcome User")
 })
 
