@@ -1,7 +1,13 @@
 import express from "express"
 const app = express()
 
-app.use(express.json())
+const greet=(req, res, next)=>{
+    console.log("hello world")
+    next()
+}
+app.use(greet)
+
+app.use(express.json())//middleware//app.use will execute the middleware
 
 const users = [
     { id: 1, name: "john", email: "john@gmail.com", role: "student" },
@@ -42,7 +48,6 @@ app.post("/", (req, res) => {
 
 app.delete("/:id", (req, res) => {
     const id = Number(req.params.id)
-
     const filteredUsers = users.filter(u => u.id !== id)
 
     if (filteredUsers.length === users.length) {
