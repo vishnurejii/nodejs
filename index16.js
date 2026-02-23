@@ -1,33 +1,70 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
 const app = express();
 app.use(express.json());
-app.listen(8080);
+
 const users = [];
-app.post("/signup", async (req, res) => {
-  const body = req.body;
-  const hashPassword = await bcrypt.hash(body.password, 10);
-  body.password = hashPassword;
-  users.push(body);
-  res.json(users);
-});
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;//destructing email and password only
-  const found = users.find((user) => user.email === email);
-  if (found) {
-    const chkPassword = await bcrypt.compare(password, found.password);
-    if (chkPassword) {
-      res.status(200).json({ message: "success" });
-    } else {
-      res.status(401).json({ message: "Invalid Password" });
+const SECRET = "lpu";
+
+//middleware
+const auth = (req, res, next) => {
+    const bearerHeader = req.headers.authorization;
+
+    if (!bearerHeader) {
+        return res.send("No token provided");
     }
-  } else {
-    res.status(401).json({ message: "User not found" });
-  }
+
+    const token = bearerHeader.split(" ")[1];
+
+    try {
+        const decoded = jwt.verify(token, SECRET);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        return res.send("Invalid token");
+    }
+};
+
+
+// signup
+app.post("/signup", async (req, res) => {
+    const body = req.body;
+
+    const hashPassword = await bcrypt.hash(body.password, 10);
+    body.password = hashPassword;
+
+    users.push(body);
+
+    res.json({ message: "User created" });
 });
-app.get("/users", (req, res) => {
-  res.json(users);
+
+
+// login
+app.post("/login", async (req, res) => {
+    const body = req.body;
+
+    const user = users.find(u => u.email === body.email);
+    if (!user) {
+        return res.send("User not found");
+    }
+
+    const isMatch = await bcrypt.compare(body.password, user.password);
+    if (!isMatch) {
+        return res.send("Wrong password");
+    }
+
+    // Generate token
+    const token = jwt.sign({ email: user.email }, SECRET);
+
+    res.json({ token: token });
 });
-app.get("/",(req,res)=>{
-    res.send("hello world")
-})
+
+
+app.get("/", auth, (req, res) => {
+    res.send("Hello World");
+});
+
+
+app.listen(8080);
