@@ -27,6 +27,15 @@ const auth = (req, res, next) => {
     }
 };
 
+const authorize = (...roles) => {
+    return (req, res, next) => {
+        if (roles.includes(req.user.role)) {
+            return next();
+        }
+        return res.status(403).json({ message: "Access Denied" });
+    };
+};
+
 
 // signup
 app.post("/signup", async (req, res) => {
@@ -56,7 +65,7 @@ app.post("/login", async (req, res) => {
     }
 
     // Generate token
-    const token = jwt.sign({ email: user.email }, SECRET);
+    const token = jwt.sign({ email: user.email , role: user.role}, SECRET);
 
     res.json({ token: token });
 });
@@ -66,5 +75,8 @@ app.get("/", auth, (req, res) => {
     res.send("Hello World");
 });
 
+app.get("/users",auth,authorize("admin"),(req,res)=>{
+    res.json(users)
+})
 
 app.listen(8080);
