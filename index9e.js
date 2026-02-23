@@ -8,9 +8,7 @@ let jwt=Math.floor(Math.random()*1001)+1000
 
 const auth=(req, res, next)=>{
 
-   
-
-    let BearerToken=req.headers.authorization
+    const BearerToken=req.headers.authorization
 
     let value=BearerToken.split(" ")
 
